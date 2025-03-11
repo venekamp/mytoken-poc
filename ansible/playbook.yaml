@@ -1,0 +1,9 @@
+---
+- name: Install and configurue a mytoken server
+  hosts: mytoken
+  gather_facts: false
+  vars_files:
+    - ~/.config/ansible/mytoken/vault.yaml
+  roles:
+    - role: install
+      become: true

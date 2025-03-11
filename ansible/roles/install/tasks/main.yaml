@@ -1,0 +1,31 @@
+---
+- name: Get repo key
+  ansible.builtin.apt_key:
+    url: https://repo.data.kit.edu/repo-data-kit-edu-key.gpg
+    keyring: /etc/apt/trusted.gpg.d/kitrepo-archive.gpg
+    state: present
+
+- name: Add APT repository
+  ansible.builtin.apt_repository:
+    repo: "deb {{ item }} ./"
+    state: present
+  loop:
+    - https://repo.data.kit.edu//ubuntu/24.04
+    - https://repo.data.kit.edu//ubuntu/noble
+
+- name: Update APT package cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install mytoken server
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - mytoken-server
+    - mytoken-server-setup
+
+- name: Remove dependencies that are no longer required
+  ansible.builtin.apt:
+    autoremove: true
